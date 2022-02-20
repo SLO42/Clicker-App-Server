@@ -1,0 +1,10 @@
+{
+    "presets": [
+        "@babel/env",
+        "@babel/preset-typescript"
+    ],
+    "plugins": [
+        "@babel/plugin-proposal-export-default-from",
+        "@babel/plugin-syntax-export-default-from"
+    ]
+}
