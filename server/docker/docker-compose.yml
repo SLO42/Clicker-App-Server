@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  dev-db:
+    image: postgres:14.2
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./init-dbs:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'

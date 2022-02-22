@@ -1,0 +1,4 @@
+CREATE DATABASE psql_test;
+CREATE DATABASE psql_dev;
+GRANT ALL PRIVILEGES ON DATABASE psql_test TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE psql_dev TO postgres;
