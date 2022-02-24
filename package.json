@@ -1,6 +1,9 @@
 {
   "name": "typescript-backend",
   "version": "1.0.0",
+  "engines": {
+    "node": "17.5"
+  },
   "description": "initial go at creating a typescript server for my clicker game.",
   "main": "src/server.js",
   "scripts": {
