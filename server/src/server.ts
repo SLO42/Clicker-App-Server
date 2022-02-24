@@ -1,6 +1,4 @@
 import express from "express";
-
-import db from "./db/db";
 import { config } from "./config";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -34,18 +32,7 @@ server.use(
 // Helmet
 server.use(helmet());
 
-
 // Routes
-server.get("/_db/warmup", async (_, res) => {
-	try {
-		// Test successful DB Connection
-		await db.raw("select 1 as dbIsConnected");
-		res.sendStatus(200);
-	} catch (error) {
-		console.error(error);
-		res.sendStatus(500);
-	}
-});
 server.use("/api", APIRouter);
 
 server.listen(config.port, ()=> {console.log(`Server listening on port ${config.port}`);});
