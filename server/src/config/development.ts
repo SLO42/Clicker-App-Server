@@ -2,7 +2,7 @@ import path from "path";
 
 export const getDevConfig = () => {
 	return {
-		port: 3000,
+		port: 4242,
 		database: {
 			client: "pg",
 			connection: {
