@@ -1,6 +1,6 @@
 import path from "path";
 
-export const getDevConfig = () => {
+export const getTestConfig = () => {
 	return {
 		version: process.env.VERSION || "0.1.0",
 		apiVersion: process.env.API_VERSION ||  "v1",

@@ -1,5 +1,6 @@
 import { getDevConfig } from "./development";
-import { getProdConfig } from "./producion";
+import { getProdConfig } from "./production";
+import { getTestConfig } from "./testing";
 
 const configObject = (() => {
 	switch (process.env.NODE_ENV) {
@@ -7,6 +8,8 @@ const configObject = (() => {
 		return getProdConfig();
 	case "dev":
 		return getDevConfig();
+	case "test":
+		return getTestConfig();
 	default:
 		throw TypeError("Invalid environment");
 	}

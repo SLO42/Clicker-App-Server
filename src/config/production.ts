@@ -2,6 +2,8 @@ import path from "path";
 
 export const getProdConfig = () => {
 	return {
+		version: process.env.VERSION || "0.1.0",
+		apiVersion: process.env.API_VERSION ||  "v1",
 		port: Number(process.env.PORT),
 		database: {
 			client: "pg",
