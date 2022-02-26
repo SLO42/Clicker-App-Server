@@ -20,8 +20,8 @@ jobs:
   test_node_17:
     docker:
       - image: cimg/node:17.5.0
-      - image: cimg/redis:latest
-      - image: cimg/postgres:14.2
+      - image: circleci/redis:latest
+      - image: circleci/postgres:latest
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: psql_dev
