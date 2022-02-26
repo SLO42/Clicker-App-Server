@@ -4,11 +4,11 @@ interface ErrorConstructor<T extends any[]> {
 }
 
 export function ensure<T extends any[]>(
-    condition: boolean,
-    ErrorToThrow: ErrorConstructor<T>,
-    ...errorArgs: T
+	condition: boolean,
+	ErrorToThrow: ErrorConstructor<T>,
+	...errorArgs: T
 ): asserts condition {
-    if (!condition) {
-        throw new ErrorToThrow(...errorArgs);
-    }
+	if (!condition) {
+		throw new ErrorToThrow(...errorArgs);
+	}
 }

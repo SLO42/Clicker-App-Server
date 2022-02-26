@@ -15,6 +15,7 @@
     "db:migrate": "knex migrate:latest",
     "db:migrate:down": "knex migrate:down",
     "db:refresh": "knex migrate:down && knex migrate:latest",
+    "lint": "eslint '{src,test}/**/*.{js,ts,tsx}'",
     "test": "node --experimental-vm-modules node_modules/.bin/jest --coverage"
   },
   "author": "SLO42",
