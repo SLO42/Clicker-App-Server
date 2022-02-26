@@ -1,8 +1,19 @@
-import { findUserById, findUserByEmail, insertUser, setUserVerified } from "../db/repos/UserRepository";
+import { findUserById,
+	findUserByEmail,
+	insertUser,
+	setUserVerified,
+	findUserByGoogleId,
+	findUserByEmailAndUpdate,
+	findUserByIdAndUpdate,
+	removeUser,
+} from "../db/repos/UserRepository";
 import { ensure } from "../utils/utils";
 import { ResourceExistsError } from "../utils/errors";
 import { randomBytes, pbkdf2Sync,  } from "crypto";
 import { User } from "../types/user";
+import jwt from "jsonwebtoken";
+import { config } from "../config";
+
 
 export const getUserProfile = async (id: string) => {
 	const user = await findUserById(id);
@@ -54,4 +65,119 @@ export const verifyUser = async (id: string, code: string) => {
 	} else {
 		throw new Error("User verification failed");
 	}
+};
+
+export const findGoogleUserOrCreate = async ( googleId: string, name: string, email: string ) => {
+	const user = await findUserByGoogleId(googleId);
+	if (user !== undefined) {
+		return user;
+	} else {
+		const user: Omit<User, "id"> = {
+			name,
+			email,
+			googleId,
+			verified: true,
+			verificationCode: null,
+			securityCode: null,
+			permissions: ["basic"],
+			salt: "",
+			hash: "",
+		};
+		const [registeredUser] = await insertUser(user);
+		return registeredUser;
+	}
+};
+
+export const forgotPassword = async (email: string) => {
+	const code = Math.floor(Math.random() * 100000).toString();
+	const user = await findUserByEmailAndUpdate(email, {
+		securityCode: code,
+	});
+	if (user && user.id) {
+		// sendForgotPasswordEmail(email, user.id, code);
+		return { status: 200, message: `Reset Link has been sent to ${email}` };
+	} else {
+		return { status: 400, message: "Email entered is not valid" };
+	}
+};
+
+export const resetPassword = async (id: string, code: string, password: string) => {
+	const user = await findUserById(id);
+
+	if (user.securityCode === code) {
+		const salt = randomBytes(16).toString("hex");
+		const hash = pbkdf2Sync(password, salt, 10000, 256, "sha256").toString("hex");
+		const updatedUser = await findUserByIdAndUpdate(id, {
+			salt,
+			hash,
+			securityCode: null,
+		});
+		if (updatedUser) {
+			// sendPasswordChangedEmail(updatedUser.email);
+		}
+		return updatedUser;
+	} else {
+		throw new Error("User verification failed");
+	}
+};
+
+export const updateProfile = async (id: string, name: string, email: string) => {
+	const user = await findUserById(id);
+
+	if (user) {
+		if (user.email !== email) {
+			const code = Math.floor(Math.random() * 100000).toString();
+			const updatedUser = await findUserByIdAndUpdate(id, {
+				name,
+				email,
+				verified: false,
+				verificationCode: code,
+			});
+			if (updatedUser) {
+				// sendActivationEmail(name, email, updatedUser.id as string, code);
+			}
+			return updatedUser;
+		} else {
+			const updatedUser = await findUserByIdAndUpdate(id, {
+				name,
+				email,
+			});
+			return updatedUser;
+		}
+	} else {
+		throw new Error("User not found");
+	}
+};
+
+export const markUserAsDeleted = async (id: string) => {
+	const user = await findUserById(id);
+
+	if (user) {
+		return await removeUser(id);
+	} else {
+		throw new Error("User not found");
+	}
+};
+
+const generateJWT = (id: string) => {
+	const today = new Date();
+	const exp = new Date(today);
+	exp.setDate(today.getDate() + 60);
+	return jwt.sign(
+		{
+			sub: id,
+			exp: exp.getTime() / 1000,
+		},
+		config.jwtSecret,
+	);
+};
+
+export const toAuthJSON = (id: string, name: string) => {
+	return {
+		id,
+		name,
+		message: "Successfully Logged In",
+		status: 200,
+		token: generateJWT(id),
+	};
 };

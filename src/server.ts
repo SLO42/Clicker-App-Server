@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import APIRouter from "./routes";
+import passport from "passport";
+import { googleStrategy, jwtStrategy, localStrategy } from "./services/auth";
 
 // .env
 dotenv.config();
@@ -32,6 +34,12 @@ server.use(
 
 // Helmet
 server.use(helmet());
+
+// Passport 
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+passport.use(googleStrategy);
 
 // Routes
 server.use("/api", APIRouter);

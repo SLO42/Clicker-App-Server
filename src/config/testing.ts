@@ -25,5 +25,10 @@ export const getTestConfig = () => {
 			port: Number(process.env.REDISPORT) || 6379,
 		},
 		accessControlAllowOrigin: "*",
+		jwtSecret: process.env.JWT_SECRET || "4t^,5B#SF$",
+		googleClientId: process.env.GOOGLE_CLIENT_ID,
+		googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+		apiUrl: "http://localhost:4242",
+		siteUrl: "http://localhost:3000",
 	};
 };
