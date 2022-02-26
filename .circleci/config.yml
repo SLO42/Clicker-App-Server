@@ -14,8 +14,8 @@ jobs:
       - image: cimg/node:17.5.0
     steps:
       - checkout
-      - install_dependencies:
-          key: 17
+      - node/install-packages:
+          pkg-manager: npm
       - run: yarn lint
   test_node_17:
     docker:
