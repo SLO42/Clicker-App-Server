@@ -8,7 +8,7 @@ export const getProdConfig = () => {
 		database: {
 			client: "pg",
 			connection: {
-				host: `${process.env.DB_HOST}`,
+				host: `${process.env.DB_URL}`,
 				database: process.env.DB_NAME,
 				user: process.env.DB_USER,
 				password: process.env.DB_PASS,
