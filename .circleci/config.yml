@@ -16,7 +16,7 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: npm
-      - run: yarn lint
+      - run: npm run lint
   test_node_17:
     docker:
       - image: cimg/node:17.5.0
