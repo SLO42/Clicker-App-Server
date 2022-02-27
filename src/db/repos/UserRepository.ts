@@ -9,7 +9,7 @@ const defaultUserProperties = [
 	"email",
 	"googleId",
 	"verified",
-	"permissions"
+	"permissions",
 ];
 
 export const insertUser = async (user: Omit<User, "id">): Promise<any> => {
@@ -53,7 +53,7 @@ export const findUserByGoogleId = async (googleId: string): Promise<User> => {
 
 export const findUserByEmailAndUpdate = async (
 	email: string,
-	data: object,
+	data: object
 ): Promise<User> => {
 	const [user] = await db("users")
 		.where({
@@ -66,8 +66,10 @@ export const findUserByEmailAndUpdate = async (
 	return user;
 };
 
-
-export const findUserByIdAndUpdate = async (id: string, data: object): Promise<User> => {
+export const findUserByIdAndUpdate = async (
+	id: string,
+	data: object
+): Promise<User> => {
 	const [user] = await db("users")
 		.where({
 			id,

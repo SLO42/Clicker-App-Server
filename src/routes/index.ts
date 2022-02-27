@@ -1,7 +1,8 @@
 import "regenerator-runtime/runtime";
 import { Router, Handler } from "express";
-import AuthRouter from "./auth";
-import {ApiMiddleware} from "../middleware/api/apiMiddleware";
+import authRouter from "./auth";
+import { ApiMiddleware } from "../middleware/api/apiMiddleware";
+import userRouter  from "./users";
 
 const router = Router();
 
@@ -9,12 +10,14 @@ router.use(ApiMiddleware);
 
 const apiRootRouteHandler: Handler = (__, res) => {
 	res.status(200);
-	res.json({"success": true});
+	res.json({ success: true });
 };
 
+//root 
 router.get("/", apiRootRouteHandler);
-
-
-router.use("/auth", AuthRouter);
+//authenticate
+router.use("/auth", authRouter);
+// users and profiles
+router.use("/user", userRouter);
 
 export default router;

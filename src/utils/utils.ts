@@ -1,6 +1,5 @@
-
 interface ErrorConstructor<T extends any[]> {
-    new (...args: T): Error;
+	new (...args: T): Error;
 }
 
 export function ensure<T extends any[]>(

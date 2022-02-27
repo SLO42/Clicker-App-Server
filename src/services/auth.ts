@@ -2,10 +2,7 @@ import passportJWT from "passport-jwt";
 import passportLocal from "passport-local";
 import passportGoogle from "passport-google-oauth2";
 import { config } from "../config";
-import {
-	findUserByEmail,
-	findUserById,
-} from "../db/repos/UserRepository";
+import { findUserByEmail, findUserById } from "../db/repos/UserRepository";
 import { pbkdf2Sync } from "crypto";
 import { findGoogleUserOrCreate } from "./user";
 
@@ -24,13 +21,18 @@ export const localStrategy = new LocalStrategy(
 		usernameField: "email",
 		passwordField: "password",
 		session: false,
-	}, (email: string, password: string, done: any) => {
+	},
+	(email: string, password: string, done: any) => {
 		findUserByEmail(email)
 			.then((user) => {
 				if (!user) {
-					return done(null, false, {message: "User does not exist"});
+					return done(null, false, {
+						message: "User does not exist",
+					});
 				} else if (user && !validPassword(password, user.salt, user.hash)) {
-					return done(null, false, {message: "Password us invalid"});
+					return done(null, false, {
+						message: "Password us invalid",
+					});
 				}
 				const userInfo = {
 					id: user.id,
@@ -38,19 +40,21 @@ export const localStrategy = new LocalStrategy(
 					email: user.email,
 					permissions: user.permissions,
 				};
-				return done(null, userInfo, {message: "Logged in successfully"});
+				return done(null, userInfo, {
+					message: "Logged in successfully",
+				});
 			})
 			.catch(done);
-	},
+	}
 );
 
 export const jwtStrategy = new JWTStrategy(
 	{
 		jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-		secretOrKey: config.jwtSecret
+		secretOrKey: config.jwtSecret,
 	},
 	async function (jwtPayload: any, cb: CallableFunction) {
-	//find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
+		//find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
 		try {
 			const user = await findUserById(jwtPayload.sub);
 			// return user data in api request as user object
@@ -64,7 +68,7 @@ export const jwtStrategy = new JWTStrategy(
 		} catch (err) {
 			return cb(err);
 		}
-	},
+	}
 );
 
 export const googleStrategy = new GoogleStrategy(
@@ -77,10 +81,12 @@ export const googleStrategy = new GoogleStrategy(
 		findGoogleUserOrCreate(profile.id, profile._json.name, profile._json.email)
 			.then((user) => {
 				if (!user) {
-					return done(null, undefined, { message: "User does not exist" });
+					return done(null, undefined, {
+						message: "User does not exist",
+					});
 				}
 				return done(null, user, { message: "Logged In Successfully" });
 			})
 			.catch(done);
-	},
+	}
 );

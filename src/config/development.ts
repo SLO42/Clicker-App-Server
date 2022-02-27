@@ -3,7 +3,7 @@ import path from "path";
 export const getDevConfig = () => {
 	return {
 		version: process.env.VERSION || "0.1.0",
-		apiVersion: process.env.API_VERSION ||  "v1",
+		apiVersion: process.env.API_VERSION || "v1",
 		port: 4242,
 		database: {
 			client: "pg",

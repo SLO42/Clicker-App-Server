@@ -6,15 +6,18 @@ import { body, param } from "express-validator";
 
 const router = Router();
 
-router.get("/", (_req,res) => {
+router.get("/", (_req, res) => {
 	res.send("hello at auth");
 });
 
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+router.get(
+	"/google",
+	passport.authenticate("google", { scope: ["profile", "email"] }));
 
 router.get("/google/callback", (req, res, next) =>
 	passport.authenticate("google", { session: false }, (err, user, info) => {
 		if (err || !user) {
+			console.log(err, user);
 			return res.status(200).json({
 				message: info ? info.message : "Login failed",
 				user: user,
@@ -28,7 +31,7 @@ router.get("/google/callback", (req, res, next) =>
 			const data = toAuthJSON(user.id, user.name);
 			res.redirect(`${config.siteUrl}/?token=${data.token}&name=${data.name}`);
 		});
-	})(req, res, next),
+	})(req, res, next)
 );
 
 const handleRegisterUserHandler: Handler = async (req, res) => {
@@ -46,7 +49,10 @@ export const validateRegisterUserHandler = [
 	body("email").isEmail(),
 	body("password").isString(),
 ];
-export const validateVerifyUser = [param("id").isString(), param("code").isString()];
+export const validateVerifyUser = [
+	param("id").isString(),
+	param("code").isString(),
+];
 
 export const validateForgotPassword = [body("email").isEmail()];
 
@@ -62,7 +68,11 @@ export const validateResetPassword = [
 	}),
 ];
 
-router.post("/register", validateRegisterUserHandler, handleRegisterUserHandler);
+router.post(
+	"/register",
+	validateRegisterUserHandler,
+	handleRegisterUserHandler
+);
 
 const handleEmailVerification: Handler = async (req, res) => {
 	const { id, code } = req.params;
@@ -74,7 +84,6 @@ const handleEmailVerification: Handler = async (req, res) => {
 	}
 };
 router.get("/verify/:id/:code", validateVerifyUser, handleEmailVerification);
-
 
 router.post("/login", (req, res, next) =>
 	passport.authenticate("local", { session: false }, (err, user, info) => {
@@ -91,7 +100,7 @@ router.post("/login", (req, res, next) =>
 			}
 			return res.json(toAuthJSON(user.id, user.name));
 		});
-	})(req, res, next),
+	})(req, res, next)
 );
 
 export default router;

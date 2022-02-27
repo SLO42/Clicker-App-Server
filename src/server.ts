@@ -21,27 +21,30 @@ server.use(
 		origin: (origin, callback) => {
 			if (
 				config.accessControlAllowOrigin === "*" ||
-                origin === config.accessControlAllowOrigin ||
-                !origin
-			){
+				origin === config.accessControlAllowOrigin ||
+				!origin
+			) {
 				callback(null, true);
 			} else {
 				callback(new Error("Not allowed by CORS"));
 			}
 		},
-	}),
+	})
 );
 
 // Helmet
 server.use(helmet());
 
-// Passport 
+// Passport
 
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 passport.use(googleStrategy);
 
 // Routes
+server.get("/", (__, res) => res.send("Hell from Clicker App Server"));
 server.use("/api", APIRouter);
 
-server.listen(config.port, ()=> {console.log(`Server listening on port ${config.port}`);});
+server.listen(config.port, () => {
+	console.log(`Server listening on port ${config.port}`);
+});

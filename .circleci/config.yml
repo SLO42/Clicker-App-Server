@@ -40,7 +40,6 @@ jobs:
           name: Run tests
           command: npm run test
     environment: NODE_ENV=test
-  
 
 workflows:
   # Below is the definition of your workflow.

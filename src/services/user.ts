@@ -1,4 +1,5 @@
-import { findUserById,
+import {
+	findUserById,
 	findUserByEmail,
 	insertUser,
 	setUserVerified,
@@ -9,11 +10,10 @@ import { findUserById,
 } from "../db/repos/UserRepository";
 import { ensure } from "../utils/utils";
 import { ResourceExistsError } from "../utils/errors";
-import { randomBytes, pbkdf2Sync,  } from "crypto";
+import { randomBytes, pbkdf2Sync } from "crypto";
 import { User } from "../types/user";
 import jwt from "jsonwebtoken";
 import { config } from "../config";
-
 
 export const getUserProfile = async (id: string) => {
 	const user = await findUserById(id);
@@ -26,7 +26,11 @@ export const getUserProfile = async (id: string) => {
 	return profile;
 };
 
-export const registerUser = async (name: string, email: string, password: string) => {
+export const registerUser = async (
+	name: string,
+	email: string,
+	password: string
+) => {
 	const userExists = await findUserByEmail(email);
 
 	ensure(userExists === undefined, ResourceExistsError, "user");
@@ -49,7 +53,7 @@ export const registerUser = async (name: string, email: string, password: string
 	const [registeredUser] = await insertUser(user);
 
 	if (registeredUser) {
-		// extend by adding email to verify users via code, 
+		// extend by adding email to verify users via code,
 		// can be done via routes through the client anyways so its fine.
 	}
 	return registeredUser;
@@ -67,7 +71,11 @@ export const verifyUser = async (id: string, code: string) => {
 	}
 };
 
-export const findGoogleUserOrCreate = async ( googleId: string, name: string, email: string ) => {
+export const findGoogleUserOrCreate = async (
+	googleId: string,
+	name: string,
+	email: string
+) => {
 	const user = await findUserByGoogleId(googleId);
 	if (user !== undefined) {
 		return user;
@@ -101,12 +109,18 @@ export const forgotPassword = async (email: string) => {
 	}
 };
 
-export const resetPassword = async (id: string, code: string, password: string) => {
+export const resetPassword = async (
+	id: string,
+	code: string,
+	password: string
+) => {
 	const user = await findUserById(id);
 
 	if (user.securityCode === code) {
 		const salt = randomBytes(16).toString("hex");
-		const hash = pbkdf2Sync(password, salt, 10000, 256, "sha256").toString("hex");
+		const hash = pbkdf2Sync(password, salt, 10000, 256, "sha256").toString(
+			"hex"
+		);
 		const updatedUser = await findUserByIdAndUpdate(id, {
 			salt,
 			hash,
@@ -121,7 +135,11 @@ export const resetPassword = async (id: string, code: string, password: string) 
 	}
 };
 
-export const updateProfile = async (id: string, name: string, email: string) => {
+export const updateProfile = async (
+	id: string,
+	name: string,
+	email: string
+) => {
 	const user = await findUserById(id);
 
 	if (user) {
@@ -168,7 +186,7 @@ const generateJWT = (id: string) => {
 			sub: id,
 			exp: exp.getTime() / 1000,
 		},
-		config.jwtSecret,
+		config.jwtSecret
 	);
 };
 

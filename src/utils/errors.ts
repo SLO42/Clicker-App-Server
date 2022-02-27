@@ -17,7 +17,7 @@ export const handleErrorResponse = (
 	error: any,
 	res: Response,
 	statusCode = 500,
-	message?: string,
+	message?: string
 ) => {
 	const errorMessage = message || error.message;
 	console.error(errorMessage, error);
