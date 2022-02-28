@@ -26,6 +26,7 @@ server.use(
 			) {
 				callback(null, true);
 			} else {
+				console.log("wat");
 				callback(new Error("Not allowed by CORS"));
 			}
 		},
