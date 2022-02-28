@@ -18,18 +18,9 @@ server.use(express.json());
 // CORS
 server.use(
 	cors({
-		origin: (origin, callback) => {
-			if (
-				config.accessControlAllowOrigin === "*" ||
-				origin === config.accessControlAllowOrigin ||
-				!origin
-			) {
-				callback(null, true);
-			} else {
-				console.log("wat");
-				callback(new Error("Not allowed by CORS"));
-			}
-		},
+		origin: "http://localhost:3000",
+  		methods: "GET,POST,PUT,DELETE",
+    	credentials: true,
 	})
 );
 
@@ -37,7 +28,6 @@ server.use(
 server.use(helmet());
 
 // Passport
-
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 passport.use(googleStrategy);

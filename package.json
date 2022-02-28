@@ -15,6 +15,7 @@
 		"db:migrate": "knex migrate:latest",
 		"db:migrate:down": "knex migrate:down",
 		"db:refresh": "knex migrate:down && knex migrate:latest",
+		"build:refresh-dev": "npm run build && NODE_ENV=dev npm run db:refresh",
 		"lint": "eslint '{src,test}/**/*.{js,ts,tsx}'",
 		"test": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
 		"prepare": "husky install"

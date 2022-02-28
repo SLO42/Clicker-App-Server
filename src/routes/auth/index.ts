@@ -19,7 +19,6 @@ router.get("/google/callback", (req, res, next) =>
 		if (err || !user) {
 			return res.status(200).json({
 				message: info ? info.message : "Login failed",
-				error: err ? err : "",
 				user: user,
 				status: 400,
 			});

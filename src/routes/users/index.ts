@@ -10,9 +10,11 @@ const router = Router();
 
 const getProfileHandler: Handler = async (req, res) => {
 	try {
-		const { id: userId } = req.user!;
-		const profile = await getUserProfile(userId);
-		res.json(profile);
+		if (req.user) {
+			const { id: userId } = req.user!;
+			const profile = await getUserProfile(userId);
+			res.json(profile);
+		}
 	} catch (error) {
 		console.error(error.message, error);
 		res.status(500).json({ message: error.message, ...error });
