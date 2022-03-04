@@ -34,20 +34,6 @@ passport.use(jwtStrategy);
 passport.use(googleStrategy);
 
 // Routes
-
-/**
-* @swagger
-* /:
-*  get:
-*   description: Ping server
-*   responses: 
-*    200:
-*     description: Hello from Clicker App Server
-*     
-*/
-
-server.get("/", (__, res) => res.send("Hello from Clicker App Server"));
-
 swaggerJsDoc(server);
 
 server.use("/api", APIRouter);
