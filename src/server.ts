@@ -6,7 +6,7 @@ import helmet from "helmet";
 import APIRouter from "./routes";
 import passport from "passport";
 import { googleStrategy, jwtStrategy, localStrategy } from "./services/auth";
-
+import swaggerJsDoc from "./services/swagger";
 // .env
 dotenv.config();
 
@@ -14,6 +14,7 @@ dotenv.config();
 const server = express();
 server.enable("trust proxy");
 server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
 
 // CORS
 server.use(
@@ -33,7 +34,22 @@ passport.use(jwtStrategy);
 passport.use(googleStrategy);
 
 // Routes
-server.get("/", (__, res) => res.send("Hell from Clicker App Server"));
+
+/**
+* @swagger
+* /:
+*  get:
+*   description: Ping server
+*   responses: 
+*    200:
+*     description: Hello from Clicker App Server
+*     
+*/
+
+server.get("/", (__, res) => res.send("Hello from Clicker App Server"));
+
+swaggerJsDoc(server);
+
 server.use("/api", APIRouter);
 
 server.listen(config.port, () => {

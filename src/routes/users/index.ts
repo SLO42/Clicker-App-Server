@@ -8,6 +8,7 @@ import { validatePatchProfile } from "../../middleware/profile";
 
 const router = Router();
 
+
 const getProfileHandler: Handler = async (req, res) => {
 	try {
 		if (req.user) {
@@ -21,8 +22,34 @@ const getProfileHandler: Handler = async (req, res) => {
 	}
 };
 
+
+/**
+ * GET /api/user/profile
+ * @summary Returns a profile
+ * @tags User
+ * @security siteLogin
+ * @return {object<Profile>} 200 - Successful response - application/json
+ * @return {object<Error>} 500 - Failed response - application/json
+ * @example response - 200 - example successful response 
+ * {"name": "John Doe", "email": "Johndoe@mail.com"}
+ * @example response - 500 - example failed response 
+ * { "message": "error message", "error": "...error" }
+ */
 router.get("/profile", getProfileHandler);
 
+/**
+ * Patch /api/user/
+ * @summary updates a users profile
+ * @tags User
+ * @security siteLogin
+ * @return {object<Profile>} 200 - Successful response - application/json
+ * @return {object<Error>} 500 - Failed response - application/json
+ * @param {RequestPatchProfile} request.body.required - profile info to update
+ * @example response - 200 - example successful response 
+ * {"name": "John Doe", "email": "Johndoe@mail.com"}
+ * @example response - 500 - example failed response 
+ * { "message": "error message", "error": "...error" }
+ */
 const patchProfileHandler: Handler = async (req, res) => {
 	try {
 		const { id: userId } = req.user!;
@@ -34,7 +61,6 @@ const patchProfileHandler: Handler = async (req, res) => {
 		res.status(500).json({ message: error.message, ...error });
 	}
 };
-
 router.patch("/", validatePatchProfile, patchProfileHandler);
 
 const deleteProfileHandler: Handler = async (req, res) => {

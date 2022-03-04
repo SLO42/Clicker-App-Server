@@ -8,8 +8,6 @@ import {
 	findUserByIdAndUpdate,
 	removeUser,
 } from "../db/repos/UserRepository";
-import { ensure } from "../utils/utils";
-import { ResourceExistsError } from "../utils/errors";
 import { randomBytes, pbkdf2Sync } from "crypto";
 import { User } from "../types/user";
 import jwt from "jsonwebtoken";
@@ -32,8 +30,9 @@ export const registerUser = async (
 	password: string
 ) => {
 	const userExists = await findUserByEmail(email);
-
-	ensure(userExists === undefined, ResourceExistsError, "user");
+	if (userExists){
+		throw new Error("user exists");
+	}
 
 	const code = Math.floor(Math.random() * 100000).toString();
 	const salt = randomBytes(16).toString("hex");
@@ -49,7 +48,6 @@ export const registerUser = async (
 		salt,
 		hash,
 	};
-
 	const [registeredUser] = await insertUser(user);
 
 	if (registeredUser) {
@@ -141,7 +139,7 @@ export const updateProfile = async (
 	email: string
 ) => {
 	const user = await findUserById(id);
-
+	
 	if (user) {
 		if (user.email !== email) {
 			const code = Math.floor(Math.random() * 100000).toString();
