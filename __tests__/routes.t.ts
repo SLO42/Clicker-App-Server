@@ -26,9 +26,8 @@ expect.extend({
 });
 
 describe("(1): Testing root API Route", () => {
-	test("(default 1): responds to /api/", async () => {
-		const res = await request(server).get("/api/");
+	test("(default 1): responds to /", async () => {
+		const res = await request(server).get("/api/auth/");
 		expect(res.statusCode).toBe(200);
-		expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
 	});
 });
