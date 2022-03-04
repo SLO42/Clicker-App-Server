@@ -34,6 +34,9 @@ passport.use(jwtStrategy);
 passport.use(googleStrategy);
 
 // Routes
+
+server.get("/", (__, res) => res.send("Hello from Clicker App Server: go to /api-docs for documentation"));
+
 swaggerJsDoc(server);
 
 server.use("/api", APIRouter);
