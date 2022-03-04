@@ -8,7 +8,9 @@ export const getProdConfig = () => {
 		database: {
 			client: "pg",
 			connection: process.env.DATABASE_URL,
-			ssl: true,
+			ssl: {
+				rejectUnauthorized: false,
+			},
 			migrations: {
 				directory: path.join("dist/db/migrations/"),
 			},
