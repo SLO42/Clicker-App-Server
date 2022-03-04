@@ -26,6 +26,12 @@
  */
 
 /**
+ * Request Patch Profile
+ * @typedef {object} RequestMigrate
+ * @property {string} apiKey - john doe
+ */
+
+/**
  * Request Register User
  * @typedef {object} RequestRegisterUser
  * @property {string} name - john doe

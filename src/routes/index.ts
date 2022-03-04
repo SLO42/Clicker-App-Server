@@ -37,7 +37,15 @@ router.post("/test", (req, res) => {
 	res.json({data: req.body});
 });
 
-
+/**
+ * POST /api/db/update/migrate
+ * @summary Migrate database
+ * @tags database
+ * @return {number} 200 - success response - application/json
+ * @param {object<RequestMigrate>} request.query.required - apiKey
+ * @example response - 200 - example successful response
+ * "200"
+ */
 router.post("/db/update/migrate", seedKeyMiddleware, handleMigrate);
 
 /**
