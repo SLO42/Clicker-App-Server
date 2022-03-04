@@ -4,6 +4,7 @@ import authRouter from "./auth";
 import { ApiMiddleware } from "../middleware/api/apiMiddleware";
 import userRouter  from "./users";
 import db from "../db/db";
+import { useUserMiddleware } from "../middleware/user/userMiddleWare";
 
 const router = Router();
 
@@ -27,7 +28,7 @@ router.get("/", apiRootRouteHandler);
 //authenticate
 router.use("/auth", authRouter);
 // users and profiles
-router.use("/user", userRouter);
+router.use("/user", useUserMiddleware,  userRouter);
 
 
 /**

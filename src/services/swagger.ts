@@ -17,27 +17,11 @@ const swaggerOptions = {
 		},
 	],
 	security: {
-		google_oauth: {
-			type: "oauth2",
-			description: "login",
-			flows: {
-				clientCredentials: {
-					authorizationUrl: "/api/auth/google",
-					tokenUrl: "/api/auth/google/callback",
-					scopes: {},
-				}
-			},
-		},
 		bearerToken: {
 			type: "http",
-			description: "bearerToken",
+			description: "sets authorization bearer to value: Please log in first",
 			scheme: "bearer",
 			bearerFormat: "JWT",
-		},
-		site_login: {
-			type: "http",
-			description: "login",
-			scheme: "basic",
 		}
 	},
 	clientId: ",",

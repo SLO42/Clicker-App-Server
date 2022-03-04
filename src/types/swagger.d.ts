@@ -40,8 +40,6 @@
  * @property {string} password - password
  */
 
-
-
 /**
  * user profile
  * @typedef {object} Profile

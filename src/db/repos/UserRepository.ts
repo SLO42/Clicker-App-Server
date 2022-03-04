@@ -38,7 +38,7 @@ export const findUserByEmail = async (email: string): Promise<User> => {
 			deleted: false,
 		})
 		.first();
-	ensure(user !== undefined, ResourceNotFound, "user", email);
+	// ensure(user !== undefined, ResourceNotFound, "user", email);
 	return user;
 };
 

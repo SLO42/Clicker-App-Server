@@ -6,47 +6,36 @@ import { validateRegisterUserHandler } from "../../middleware/validator";
 
 const router = Router();
 
-
 /**
-* @swagger
-* /api/auth:
-*  get:
-*   summary: Ping route at Auth
-*   description: Redundant ping
-*   responses: 
-*    200:
-*     description: Success
-*/
+ * GET /api/auth/
+ * @summary ping the auth
+ * @tags Auth
+ * @return {string} 200 - Successful response - application/json
+ * @return {object<Error>} 500 - Failed response - application/json
+ * @example response - 200 - example successful response 
+ * "hello at auth"
+ * @example response - 500 - example failed response 
+ * { "message": "error message", "error": "...error" }
+ */
 router.get("/", (_req, res) => {
 	res.send("hello at auth");
 });
 
 /**
-* @swagger
-* /api/auth/google:
-*  get:
-*   summary: Initial call for google OAuth
-*   description: Passport authentication with Google
-*   responses: 
-*    302:
-*     description: Successfully redirect to main page.
-*/
+ * GET /api/auth/google
+ * @summary initial call to sign in via google.
+ * @tags Auth
+ */
 router.get(
 	"/google",
 	passport.authenticate("google", { scope: ["profile", "email"] }));
 
-
-
 /**
-* @swagger
-* /api/auth/google/callback:
-*  get:
-*   summary: Callback from google OAuth
-*   description: google OAuth2 callback 
-*   responses: 
-*    200:
-*     description: Successfully redirect to main page.
-*/
+ * GET /api/auth/google/callback
+ * @summary Callback from google OAuth
+ * @tags Auth
+ * @description google OAuth2 callback
+ */
 router.get("/google/callback", (req, res, next) =>
 	passport.authenticate("google", { session: false}, (err, user, info) => {
 		if (err || !user) {
