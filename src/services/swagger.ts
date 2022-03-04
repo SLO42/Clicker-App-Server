@@ -26,7 +26,7 @@ const swaggerOptions = {
 	},
 	clientId: ",",
 	baseDir: "./",
-	swaggerUIPath: "/api-docs",
+	swaggerUIPath: "/",
 	apiDocsPath: "/v1/api-docs",
 	exposeSwaggerUI: true,
 	exposeApiDocs: true,

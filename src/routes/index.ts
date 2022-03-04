@@ -1,5 +1,5 @@
 import "regenerator-runtime/runtime";
-import { Router, Handler } from "express";
+import { Router } from "express";
 import authRouter from "./auth";
 import { ApiMiddleware } from "../middleware/api/apiMiddleware";
 import userRouter  from "./users";
@@ -11,20 +11,10 @@ const router = Router();
 router.use(ApiMiddleware);
 
 /**
- * GET /api/
- * @summary This is the summary of the endpoint
- * @tags test
- * @return {object<PingResponse>} 200 - success response - application/json
- * @example response - 200 - example successful response
- * { "success": true }
+ * GET /
+ * @summary Returns swagger ui endpoint
  */
-const apiRootRouteHandler: Handler = (__, res) => {
-	res.status(200);
-	res.json({ success: true });
-};
 
-//root 
-router.get("/", apiRootRouteHandler);
 //authenticate
 router.use("/auth", authRouter);
 // users and profiles
