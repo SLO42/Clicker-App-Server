@@ -4,14 +4,14 @@ import { getTestConfig } from "./testing";
 
 const configObject = (() => {
 	switch (process.env.NODE_ENV) {
-		case "production":
-			return getProdConfig();
-		case "dev":
-			return getDevConfig();
-		case "test":
-			return getTestConfig();
-		default:
-			throw TypeError("Invalid environment");
+	case "production":
+		return getProdConfig();
+	case "dev":
+		return getDevConfig();
+	case "test":
+		return getTestConfig();
+	default:
+		throw TypeError("Invalid environment");
 	}
 })();
 

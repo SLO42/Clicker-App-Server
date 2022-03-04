@@ -1,9 +1,10 @@
+
 export interface User {
 	id: string;
 	googleId?: string;
 	name: string;
 	email: string;
-	permissions: Array<string>;
+	permissions: string;
 	verified: boolean;
 	verificationCode: string | null;
 	securityCode: string | null;

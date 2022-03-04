@@ -8,8 +8,6 @@ import {
 	findUserByIdAndUpdate,
 	removeUser,
 } from "../db/repos/UserRepository";
-import { ensure } from "../utils/utils";
-import { ResourceExistsError } from "../utils/errors";
 import { randomBytes, pbkdf2Sync } from "crypto";
 import { User } from "../types/user";
 import jwt from "jsonwebtoken";
@@ -32,24 +30,24 @@ export const registerUser = async (
 	password: string
 ) => {
 	const userExists = await findUserByEmail(email);
-
-	ensure(userExists === undefined, ResourceExistsError, "user");
+	if (userExists){
+		throw new Error("user exists");
+	}
 
 	const code = Math.floor(Math.random() * 100000).toString();
 	const salt = randomBytes(16).toString("hex");
 	const hash = pbkdf2Sync(password, salt, 10000, 256, "sha256").toString("hex");
-
+	
 	const user: Omit<User, "id"> = {
 		name,
 		email,
 		verified: false,
 		verificationCode: code,
 		securityCode: null,
-		permissions: ["basic"],
+		permissions: "basic",
 		salt,
 		hash,
 	};
-
 	const [registeredUser] = await insertUser(user);
 
 	if (registeredUser) {
@@ -83,11 +81,11 @@ export const findGoogleUserOrCreate = async (
 		const user: Omit<User, "id"> = {
 			name,
 			email,
+			permissions: "basic",
 			googleId,
 			verified: true,
 			verificationCode: null,
 			securityCode: null,
-			permissions: ["basic"],
 			salt: "",
 			hash: "",
 		};
@@ -141,7 +139,7 @@ export const updateProfile = async (
 	email: string
 ) => {
 	const user = await findUserById(id);
-
+	
 	if (user) {
 		if (user.email !== email) {
 			const code = Math.floor(Math.random() * 100000).toString();

@@ -1,23 +1,44 @@
 import passport from "passport";
 import { Router, Handler } from "express";
 import { config } from "../../config";
-import { registerUser, toAuthJSON, verifyUser } from "../../services/user";
-import { body, param } from "express-validator";
+import { registerUser, toAuthJSON } from "../../services/user";
+import { validateRegisterUserHandler } from "../../middleware/validator";
 
 const router = Router();
 
+/**
+ * GET /api/auth/
+ * @summary ping the auth
+ * @tags Auth
+ * @return {string} 200 - Successful response - application/json
+ * @return {object<Error>} 500 - Failed response - application/json
+ * @example response - 200 - example successful response 
+ * "hello at auth"
+ * @example response - 500 - example failed response 
+ * { "message": "error message", "error": "...error" }
+ */
 router.get("/", (_req, res) => {
 	res.send("hello at auth");
 });
 
+/**
+ * GET /api/auth/google
+ * @summary initial call to sign in via google.
+ * @tags Auth
+ */
 router.get(
 	"/google",
 	passport.authenticate("google", { scope: ["profile", "email"] }));
 
+/**
+ * GET /api/auth/google/callback
+ * @summary Callback from google OAuth
+ * @tags Auth
+ * @description google OAuth2 callback
+ */
 router.get("/google/callback", (req, res, next) =>
-	passport.authenticate("google", { session: false }, (err, user, info) => {
+	passport.authenticate("google", { session: false}, (err, user, info) => {
 		if (err || !user) {
-			console.log(err, user);
 			return res.status(200).json({
 				message: info ? info.message : "Login failed",
 				user: user,
@@ -40,51 +61,40 @@ const handleRegisterUserHandler: Handler = async (req, res) => {
 		const user = await registerUser(name, email, password);
 		res.json(user);
 	} catch (error) {
-		res.status(500).json(error);
+		res.status(500).json({ message: error.message, ...error });
 	}
 };
 
-export const validateRegisterUserHandler = [
-	body("name").isString(),
-	body("email").isEmail(),
-	body("password").isString(),
-];
-export const validateVerifyUser = [
-	param("id").isString(),
-	param("code").isString(),
-];
-
-export const validateForgotPassword = [body("email").isEmail()];
-
-export const validateResetPassword = [
-	body("id").isString(),
-	body("code").isString(),
-	body("password").isString(),
-	body("confirmPassword").custom((value, { req }) => {
-		if (value !== req.body.password) {
-			throw new Error("Password confirmation does not match password");
-		}
-		return true;
-	}),
-];
-
+/**
+ * POST /api/auth/register
+ * @summary Registers and returns a user
+ * @tags Auth
+ * @return {object<Profile>} 200 - Successful response - application/json
+ * @return {object<Error>} 500 - Failed response - application/json
+ * @param {RequestRegisterUser} request.body.required - profile info to update
+ * @example response - 200 - example successful response 
+ * {"name": "John Doe", "email": "Johndoe@mail.com"}
+ * @example response - 500 - example failed response 
+ * { "message": "error message", "error": "...error" }
+ */
 router.post(
 	"/register",
 	validateRegisterUserHandler,
 	handleRegisterUserHandler
 );
 
-const handleEmailVerification: Handler = async (req, res) => {
-	const { id, code } = req.params;
-	try {
-		await verifyUser(id, code);
-		res.sendStatus(200);
-	} catch (error) {
-		res.status(500).json({ error });
-	}
-};
-router.get("/verify/:id/:code", validateVerifyUser, handleEmailVerification);
-
+/**
+ * POST /api/auth/login
+ * @summary Logs a user in
+ * @tags Auth
+ * @return {object<Profile>} 200 - Successful response - application/x-www-form-urlencoded
+ * @return {object<Error>} 500 - Failed response - application/x-www-form-urlencoded
+ * @param {RequestLoginUser} request.body.required - profile info to update - application/x-www-form-urlencoded
+ * @example response - 200 - example successful response 
+ * {"name": "John Doe", "email": "Johndoe@mail.com"}
+ * @example response - 500 - example failed response 
+ * { "message": "error message", "error": "...error" }
+ */
 router.post("/login", (req, res, next) =>
 	passport.authenticate("local", { session: false }, (err, user, info) => {
 		if (err || !user) {
@@ -95,6 +105,7 @@ router.post("/login", (req, res, next) =>
 			});
 		}
 		req.login(user, { session: false }, (err) => {
+			console.log("login");
 			if (err) {
 				next(err);
 			}
