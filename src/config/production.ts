@@ -24,6 +24,7 @@ export const getProdConfig = () => {
 			host: process.env.REDISHOST || "localhost",
 			port: Number(process.env.REDISPORT) || 6379,
 		},
+		seedKey: process.env.SEED_KEY || "basicAuth",
 		accessControlAllowOrigin: "*",
 		jwtSecret: process.env.JWT_SECRET || "4t^,5B#SF$",
 		googleClientId: process.env.GOOGLE_CLIENT_ID,

@@ -5,7 +5,8 @@ import { ApiMiddleware } from "../middleware/api/apiMiddleware";
 import userRouter  from "./users";
 import db from "../db/db";
 import { useUserMiddleware } from "../middleware/user/userMiddleWare";
-
+import seedKeyMiddleware from "../middleware/db/seedKey";
+import { handleMigrate } from "./migrate";
 const router = Router();
 
 router.use(ApiMiddleware);
@@ -35,6 +36,9 @@ router.post("/test", (req, res) => {
 	res.status(200);
 	res.json({data: req.body});
 });
+
+
+router.post("/db/update/migrate", seedKeyMiddleware, handleMigrate);
 
 /**
  * GET /api/_dbTestConnect
