@@ -28,7 +28,7 @@
 /**
  * Request Patch Profile
  * @typedef {object} RequestMigrate
- * @property {string} apiKey - john doe
+ * @property {string} apiKey - seedKey
  */
 
 /**
