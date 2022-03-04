@@ -7,12 +7,7 @@ export const getProdConfig = () => {
 		port: Number(process.env.PORT),
 		database: {
 			client: "pg",
-			connection: {
-				host: `${process.env.DATABASE_URL}`,
-				database: process.env.DB_NAME,
-				user: process.env.DB_USER,
-				password: process.env.DB_PASS,
-			},
+			connection: process.env.DATABASE_URL,
 			migrations: {
 				directory: path.join("dist/db/migrations/"),
 			},
