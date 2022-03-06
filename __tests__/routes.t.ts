@@ -2,6 +2,7 @@ import { expect, test, describe } from "@jest/globals";
 import request from "supertest";
 import server from "../src/server";
 import { config } from "../src/config";
+import db from "../src/db/db";
 
 const testingCorrectUser = {
 	"name": "testing",
@@ -124,3 +125,4 @@ describe("User routes: ", () => {
 	});
 });
 
+afterAll(() => db.destroy());
