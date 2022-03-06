@@ -1,5 +1,6 @@
 import { Handler, Router } from "express";
 import {
+	deleteUserById,
 	getUserProfile,
 	markUserAsDeleted,
 	updateProfile,
@@ -87,5 +88,29 @@ const deleteProfileHandler: Handler = async (req, res): Promise<void> => {
 	}
 };
 router.delete("/", deleteProfileHandler);
+
+/**
+ * DELETE /api/user/confirm
+ * @summary Delete the currently logged in user from the database (DANGEROUS)
+ * @tags User
+ * @security bearerToken
+ * @return {string} 200 - Successful response - plain/text
+ * @return {object<Error>} 500 - Failed response - application/json
+ * @example response - 200 - example successful response 
+ * "Ok" 
+ * @example response - 500 - example failed response
+ * { "message": "error message", "error": "...error" }
+ */
+const deleteConfirmHandler: Handler = async (req, res): Promise<void> => {
+	try {
+		const { id: userId } = req.user!;
+		await deleteUserById(userId);
+		res.json("OK");
+	} catch (error) {
+		console.error(error.message, error);
+		res.status(500).json({ message: error.message, ...error });
+	}
+};
+router.delete("/confirm", deleteConfirmHandler);
 
 export default router;

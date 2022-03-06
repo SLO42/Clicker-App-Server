@@ -2,7 +2,7 @@ import passport from "passport";
 import { Router, Handler } from "express";
 import { config } from "../../config";
 import { registerUser, toAuthJSON } from "../../services/user";
-import { validateRegisterUserHandler } from "../../middleware/validator";
+import { validateErrors, validateRegisterUserHandler } from "../../middleware/validator";
 
 const router = Router();
 
@@ -55,16 +55,6 @@ router.get("/google/callback", (req, res, next) =>
 	})(req, res, next)
 );
 
-const handleRegisterUserHandler: Handler = async (req, res) => {
-	try {
-		const { name, email, password } = req.body;
-		const user = await registerUser(name, email, password);
-		res.json(user);
-	} catch (error) {
-		res.status(500).json({ message: error.message, ...error });
-	}
-};
-
 /**
  * POST /api/auth/register
  * @summary Registers and returns a user
@@ -77,6 +67,17 @@ const handleRegisterUserHandler: Handler = async (req, res) => {
  * @example response - 500 - example failed response 
  * { "message": "error message", "error": "...error" }
  */
+const handleRegisterUserHandler: Handler = async (req, res) => {
+	if (validateErrors(req, res)){
+		try {
+			const { name, email, password } = req.body;
+			const user = await registerUser(name, email, password);
+			res.json(user);
+		} catch (error) {
+			res.status(500).json({ message: error.message, ...error });
+		}
+	}
+};
 router.post(
 	"/register",
 	validateRegisterUserHandler,
@@ -105,7 +106,6 @@ router.post("/login", (req, res, next) =>
 			});
 		}
 		req.login(user, { session: false }, (err) => {
-			console.log("login");
 			if (err) {
 				next(err);
 			}

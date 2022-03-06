@@ -31,7 +31,7 @@ server.use(helmet());
 // Passport
 passport.use(localStrategy);
 passport.use(jwtStrategy);
-passport.use(googleStrategy);
+if (process.env.NODE_ENV !== "test") passport.use(googleStrategy);
 
 // Routes
 
@@ -41,6 +41,8 @@ swaggerJsDoc(server);
 
 server.use("/api", APIRouter);
 
-server.listen(config.port, () => {
+if (process.env.NODE_ENV !== "test") server.listen(config.port, () => {
 	console.log(`Server listening on port ${config.port}`);
 });
+
+export default server;

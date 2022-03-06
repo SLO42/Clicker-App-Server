@@ -17,8 +17,8 @@
 		"db:refresh": "knex migrate:down && knex migrate:latest",
 		"build:refresh-dev": "npm run build && NODE_ENV=dev npm run db:refresh",
 		"lint": "eslint '{src,test}/**/*.{js,ts,tsx}'",
-		"test": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
-		"prepare": "husky install"
+		"test": "NODE_ENV=test node -r dotenv/config --experimental-vm-modules node_modules/.bin/jest --runInBand --coverage",
+		"prepare": "husky in stall"
 	},
 	"husky": {
 		"hooks": {

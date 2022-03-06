@@ -31,6 +31,17 @@ export const findUserById = async (id: string): Promise<User> => {
 	return user;
 };
 
+export const findDeletedUserById = async (id: string): Promise<User> => {
+	const user = await db("users")
+		.where({
+			id,
+			deleted: true,
+		})
+		.first();
+	ensure(user !== undefined, ResourceNotFound, "user", id);
+	return user;
+};
+
 export const findUserByEmail = async (email: string): Promise<User> => {
 	const user = await db("users")
 		.where({
@@ -38,7 +49,6 @@ export const findUserByEmail = async (email: string): Promise<User> => {
 			deleted: false,
 		})
 		.first();
-	// ensure(user !== undefined, ResourceNotFound, "user", email);
 	return user;
 };
 
@@ -100,4 +110,23 @@ export const removeUser = async (id: string): Promise<User> => {
 		deleted: true,
 	});
 	return updatedUser;
+};
+
+export const deleteUser = async (id: string): Promise<number> => {
+	const status = await db("users")
+		.delete()
+		.where({
+			id,
+			deleted: true,
+		});
+	return status;
+};
+
+export const deleteUserByEmail = async (email: string): Promise<number> => {
+	const status = await db("users")
+		.delete()
+		.where({
+			email,
+		});
+	return status;
 };

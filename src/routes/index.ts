@@ -7,6 +7,7 @@ import db from "../db/db";
 import { useUserMiddleware } from "../middleware/user/userMiddleWare";
 import seedKeyMiddleware from "../middleware/db/seedKey";
 import { handleMigrate } from "./migrate";
+
 const router = Router();
 
 router.use(ApiMiddleware);
@@ -20,7 +21,6 @@ router.use(ApiMiddleware);
 router.use("/auth", authRouter);
 // users and profiles
 router.use("/user", useUserMiddleware,  userRouter);
-
 
 /**
  * POST /api/test
@@ -53,10 +53,10 @@ router.post("/db/update/migrate", seedKeyMiddleware, handleMigrate);
  * @summary Test the connecting between server and database
  * @tags test
  * @tags database
- * @return {number} 200 - Successfully pinged database - application/json
+ * @return {number} 200 - Successfully pinged database - text/plain
  * @return {object} 500 - Failed to ping database
  * @example response - 200 - example successful response
- * {}
+ * "OK"
  * @example response - 500 - example failed response
  * {"message": "Internal server error", "code": 500}
 */

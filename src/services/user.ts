@@ -7,6 +7,7 @@ import {
 	findUserByEmailAndUpdate,
 	findUserByIdAndUpdate,
 	removeUser,
+	deleteUser,
 } from "../db/repos/UserRepository";
 import { randomBytes, pbkdf2Sync } from "crypto";
 import { User } from "../types/user";
@@ -170,6 +171,16 @@ export const markUserAsDeleted = async (id: string) => {
 
 	if (user) {
 		return await removeUser(id);
+	} else {
+		throw new Error("User not found");
+	}
+};
+
+export const deleteUserById: any = async (id: string) => {
+	const user = await findUserById(id);
+
+	if (user) {
+		return await deleteUser(id);
 	} else {
 		throw new Error("User not found");
 	}
