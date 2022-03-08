@@ -5,6 +5,7 @@ import { config } from "../config";
 import { findUserByEmail, findUserById } from "../db/repos/UserRepository";
 import { pbkdf2Sync } from "crypto";
 import { findGoogleUserOrCreate } from "./user";
+const GoogleOneTapStrategy = require("passport-google-one-tap").GoogleOneTapStrategy;
 
 const LocalStrategy = passportLocal.Strategy;
 const GoogleStrategy = passportGoogle.Strategy;
@@ -79,6 +80,27 @@ export const googleStrategy = new GoogleStrategy(
 	},
 	function (_accessToken: any, _refreshToken: any, profile: any, done: any) {
 		findGoogleUserOrCreate(profile.id, profile._json.name, profile._json.email)
+			.then((user) => {
+				if (!user) {
+					return done(null, undefined, {
+						message: "User does not exist",
+					});
+				}
+				return done(null, user, { message: "Logged In Successfully" });
+			})
+			.catch(done);
+	}
+);
+
+
+export const googleOneTapStrategy = new GoogleOneTapStrategy(
+	{
+		clientID: config.googleClientId! || "",
+		clientSecret: config.googleClientSecret! || "",
+		verifyCsrfToken: false,
+	},
+	(profile: any, done: any) => { 
+		findGoogleUserOrCreate(profile.id, profile.displayName, profile.emails[0].value)
 			.then((user) => {
 				if (!user) {
 					return done(null, undefined, {
