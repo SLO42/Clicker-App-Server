@@ -29,11 +29,10 @@ const getProfileHandler: Handler = async (req, res) => {
 			res.json(profile);
 		}
 		else{
-			console.log(req.user);
 			throw new Error("user not logged in");
 		}
 	} catch (error) {
-		console.log(error.message, error);
+		console.error(error.message, error);
 		res.status(401).send({ message: error.message, ...error });
 	}
 };

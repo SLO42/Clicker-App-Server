@@ -61,8 +61,8 @@ router.get("/google/callback", (req, res, next) =>
  * @tags Auth
  * @description google OAuth2 callback
  */
-router.post("/google-one-tap/callback", (req, res, next) =>
-	passport.authenticate("google-one-tap", { session: false }, (err, user, info) => {
+router.post("/google-one-tap/login", async (req, res) => 
+	passport.authenticate("custom", { session: false }, (err, user, info) => {
 		if (err || !user) {
 			return res.status(200).json({
 				message: info ? info.message : "Login failed",
@@ -70,16 +70,15 @@ router.post("/google-one-tap/callback", (req, res, next) =>
 				status: 400,
 			});
 		}
-		console.log(user);
 		req.login(user, { session: false }, (err) => {
 			if (err) {
-				next(err);
+				res.send(err);
 			}
-			const data = toAuthJSON(user.id, user.name);
-			res.redirect(`${config.siteUrl}/?token=${data.token}&name=${data.name}`);
+			return res.json(toAuthJSON(user.id, user.name));
 		});
-	})(req, res, next)
+	})
 );
+
 
 /**
  * POST /api/auth/register

@@ -5,7 +5,7 @@ import cors from "cors";
 import helmet from "helmet";
 import APIRouter from "./routes";
 import passport from "passport";
-import { googleOneTapStrategy, googleStrategy, jwtStrategy, localStrategy } from "./services/auth";
+import { customStrategy, googleOneTapStrategy, googleStrategy, jwtStrategy, localStrategy } from "./services/auth";
 import swaggerJsDoc from "./services/swagger";
 // .env
 dotenv.config();
@@ -31,6 +31,7 @@ server.use(helmet());
 // Passport
 passport.use(localStrategy);
 passport.use(jwtStrategy);
+passport.use(customStrategy);
 if (process.env.NODE_ENV !== "test") {
 	passport.use(googleStrategy);
 	passport.use(googleOneTapStrategy);

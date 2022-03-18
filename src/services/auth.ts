@@ -1,14 +1,17 @@
 import passportJWT from "passport-jwt";
 import passportLocal from "passport-local";
 import passportGoogle from "passport-google-oauth2";
+import passportCustom from "passport-custom";
 import { config } from "../config";
 import { findUserByEmail, findUserById } from "../db/repos/UserRepository";
 import { pbkdf2Sync } from "crypto";
 import { findGoogleUserOrCreate } from "./user";
+import { parseJwt } from "../utils/utils";
 const GoogleOneTapStrategy = require("passport-google-one-tap").GoogleOneTapStrategy;
 
 const LocalStrategy = passportLocal.Strategy;
 const GoogleStrategy = passportGoogle.Strategy;
+const CustomStrategy = passportCustom.Strategy;
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
@@ -112,3 +115,19 @@ export const googleOneTapStrategy = new GoogleOneTapStrategy(
 			.catch(done);
 	}
 );
+
+export const customStrategy = new CustomStrategy((req, done) => {
+	const token = req.headers.authorization?.split(" ")[1];
+	if (token) {
+		const parsedToken = parseJwt(token);
+		findGoogleUserOrCreate(parsedToken.sub, parsedToken.name, parsedToken.email)
+			.then((user) => {
+				if (!user) {
+					return done({message: "Could not create user"}, undefined);
+				}
+				return done(null, user);
+			})
+			.catch(done);
+	}
+	done({message: "Authorization required"}, undefined);
+});
