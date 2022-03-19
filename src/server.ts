@@ -5,8 +5,9 @@ import cors from "cors";
 import helmet from "helmet";
 import APIRouter from "./routes";
 import passport from "passport";
-import { customStrategy, googleOneTapStrategy, googleStrategy, jwtStrategy, localStrategy } from "./services/auth";
+import { customStrategy, jwtStrategy, localStrategy } from "./services/auth"; // googleOneTapStrategy, googleStrategy,
 import swaggerJsDoc from "./services/swagger";
+
 // .env
 dotenv.config();
 
@@ -20,8 +21,8 @@ server.use(express.urlencoded({ extended: true }));
 server.use(
 	cors({
 		origin: "http://localhost:3000",
-  		methods: "GET,POST,PUT,DELETE",
-    	credentials: true,
+		methods: "GET,POST,PUT,DELETE",
+		credentials: true,
 	})
 );
 
@@ -32,21 +33,15 @@ server.use(helmet());
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 passport.use(customStrategy);
-if (process.env.NODE_ENV !== "test") {
-	passport.use(googleStrategy);
-	passport.use(googleOneTapStrategy);
-};
+// passport.use(googleOneTapStrategy);
 
 // Routes
-
 server.get("/", (__, res) => res.send("Hello from Clicker App Server: go to /api-docs for documentation"));
-
 swaggerJsDoc(server);
-
 server.use("/api", APIRouter);
 
 if (process.env.NODE_ENV !== "test") server.listen(config.port, () => {
-	console.log(`Server listening on port ${config.port}`);
+	console.log(`Server listening on port ${config.port} and running in ${process.env.NODE_ENV}`);
 });
 
 export default server;

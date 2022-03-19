@@ -1,4 +1,5 @@
 import expressJSDocSwagger from "express-jsdoc-swagger";
+import express from "express";
 
 const swaggerOptions = {
 	info: {
@@ -34,8 +35,8 @@ const swaggerOptions = {
 	filesPattern: ["./src/server.ts", "./src/routes/index.ts", "./src/routes/**/*.ts", "./src/types/swagger.d.ts"],
 };
 
-export const swaggerJsDoc = (app: any) => {
-	return expressJSDocSwagger(app)(swaggerOptions);
+export const swaggerJsDoc = (server: express.Application) => {
+	return expressJSDocSwagger(server)(swaggerOptions);
 };
 
 export default swaggerJsDoc;

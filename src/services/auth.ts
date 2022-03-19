@@ -1,6 +1,5 @@
 import passportJWT from "passport-jwt";
 import passportLocal from "passport-local";
-import passportGoogle from "passport-google-oauth2";
 import passportCustom from "passport-custom";
 import { config } from "../config";
 import { findUserByEmail, findUserById } from "../db/repos/UserRepository";
@@ -10,7 +9,6 @@ import { parseJwt } from "../utils/utils";
 const GoogleOneTapStrategy = require("passport-google-one-tap").GoogleOneTapStrategy;
 
 const LocalStrategy = passportLocal.Strategy;
-const GoogleStrategy = passportGoogle.Strategy;
 const CustomStrategy = passportCustom.Strategy;
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
@@ -75,27 +73,6 @@ export const jwtStrategy = new JWTStrategy(
 	}
 );
 
-export const googleStrategy = new GoogleStrategy(
-	{
-		clientID: config.googleClientId!,
-		clientSecret: config.googleClientSecret!,
-		callbackURL: `${config.apiUrl}/api/auth/google/callback`,
-	},
-	function (_accessToken: any, _refreshToken: any, profile: any, done: any) {
-		findGoogleUserOrCreate(profile.id, profile._json.name, profile._json.email)
-			.then((user) => {
-				if (!user) {
-					return done(null, undefined, {
-						message: "User does not exist",
-					});
-				}
-				return done(null, user, { message: "Logged In Successfully" });
-			})
-			.catch(done);
-	}
-);
-
-
 export const googleOneTapStrategy = new GoogleOneTapStrategy(
 	{
 		clientID: config.googleClientId! || "",
@@ -123,11 +100,14 @@ export const customStrategy = new CustomStrategy((req, done) => {
 		findGoogleUserOrCreate(parsedToken.sub, parsedToken.name, parsedToken.email)
 			.then((user) => {
 				if (!user) {
-					return done({message: "Could not create user"}, undefined);
+					return done( "Could not create user", undefined);
 				}
+				req.user = user;
+				req.user!.picture = parsedToken.picture || undefined;
 				return done(null, user);
 			})
 			.catch(done);
+	}else{
+		done("Authorization required", undefined);
 	}
-	done({message: "Authorization required"}, undefined);
 });

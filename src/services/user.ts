@@ -75,7 +75,6 @@ export const findGoogleUserOrCreate = async (
 	name: string,
 	email: string
 ) => {
-	console.log(googleId);
 	const user = await findUserByGoogleId(googleId);
 	if (user !== undefined) {
 		return user;

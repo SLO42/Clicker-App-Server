@@ -56,28 +56,37 @@ router.get("/google/callback", (req, res, next) =>
 );
 
 /**
- * POST /api/auth/google-one-tap/callback
+ * POST /api/auth/google-one-tap/login
  * @summary Callback from google OAuth
  * @tags Auth
  * @description google OAuth2 callback
  */
-router.post("/google-one-tap/login", async (req, res) => 
-	passport.authenticate("custom", { session: false }, (err, user, info) => {
-		if (err || !user) {
-			return res.status(200).json({
-				message: info ? info.message : "Login failed",
-				user: user,
-				status: 400,
-			});
+router.post("/google-one-tap/login", passport.authenticate("custom", { session: false }),
+	(req, res) => {
+
+		if (req.user){
+			const data = toAuthJSON(req.user.id, req.user.name);
+			res.json({...data, picture: req.user.picture});
 		}
-		req.login(user, { session: false }, (err) => {
-			if (err) {
-				res.send(err);
-			}
-			return res.json(toAuthJSON(user.id, user.name));
-		});
-	})
-);
+		else{
+			res.status(401).send("no");
+		}
+	});
+// passport.authenticate("custom", { session: false }, (err, user) => {
+// 	if (err || !user) {
+// 		return res.status(200).json({
+// 			message: err ? err.message : "Login failed",
+// 			user: user,
+// 			status: 400,
+// 		});
+// 	}
+// 	req.login(user, { session: false }, (err) => {
+// 		if (err) {
+// 			return res.send(err);
+// 		}
+// 		return res.json(toAuthJSON(user.id, user.name));
+// 	});
+// })
 
 
 /**

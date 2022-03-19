@@ -5,7 +5,8 @@ declare global {
 		interface User {
 			id: string;
 			name: string;
-			permissions: Array<string>;
+			permissions: string;
+			picture?: string;
 		}
 		interface Request {
 			authInfo?: AuthInfo;
